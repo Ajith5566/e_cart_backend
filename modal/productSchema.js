@@ -16,6 +16,10 @@ const productSchema=new mongoose.Schema({
     image:{
         type:String,
         require:true  // URL or file name
+    },
+    adminId:{
+        type:String,
+        require:true
     }
 },{ timestamps: true });
 

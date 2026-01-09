@@ -4,7 +4,11 @@ const express = require("express");
 // Import controller functions (user )
 const userController = require("../controller/userController");
 //import controller fro products
-const projectController=require("../controller/projectController")
+const projectController=require("../controller/projectController");
+const jwtMiddleware = require("../middleware/jwtMiddleware");
+
+//import multer
+const multerconfig = require("../middleware/multerMiddleware");
 
 
 // ROUTER INITIALIZATION
@@ -23,7 +27,7 @@ router.post("/user/login", userController.login);
 router.post("/admin/login",userController.adminlogin)
 
 //path for resolving prduct
-router.post("/add-product",projectController.addproject)
+router.post("/add-product",jwtMiddleware,multerconfig.single('image'),projectController.addproject)
 
 // Export router to be used in server.js / app.js
 module.exports = router;
