@@ -26,6 +26,9 @@ cartServer.use(express.json());
 // 7) use router
 cartServer.use(router);
 
+
+cartServer.use('/uploads',express.static('./uploads'))
+
 //import app middleware
 
 

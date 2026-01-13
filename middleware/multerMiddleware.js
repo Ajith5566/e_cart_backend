@@ -10,14 +10,14 @@ const storage =multer.diskStorage({
     },
     filename:(req,file,callback)=>{
         /* Date.now() returns time in milli sec */
-        const filename=`image -${Date.now()}-${file.originalname}`;
+        const filename=`image-${Date.now()}-${file.originalname}`;
         callback(null,filename)
     }
 })
 
 //file filter
 const fileFilter=(req,file,callback)=>{
-    if(file.mimetype=='image/png'  || file.mimetype=='image/jpeg' || file.mimetype=='image/jpg'){
+    if(file.mimetype=='image/png'  || file.mimetype=='image/jpeg' || file.mimetype=='image/jpg' || file.mimetype=='image/avif')  {
         callback(null,true)
     }else{
         callback(null,false)

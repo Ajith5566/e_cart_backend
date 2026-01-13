@@ -29,5 +29,16 @@ router.post("/admin/login",userController.adminlogin)
 //path for resolving prduct
 router.post("/add-product",jwtMiddleware,multerconfig.single('image'),projectController.addproject)
 
+//path for getting all products
+router.get("/admin/products",projectController.getAllproducts)
+
+//path for delete product
+router.delete("/admin/product/:id", jwtMiddleware, projectController.deleteProduct);
+
+
+//path for update product
+router.put("/admin/productUpdate/:id",jwtMiddleware,multerconfig.single("image"),projectController.updateProduct);
+
+
 // Export router to be used in server.js / app.js
 module.exports = router;
