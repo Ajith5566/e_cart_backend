@@ -37,9 +37,15 @@ exports.register = async (req, res) => {
 exports.login=async(req,res)=>{
     //console.log('inside login function');
     
+    
     const {email,password} =req.body;
 
    try{const existingUser = await users.findOne({mailId: email, password: password});
+   if (existingUser.isBlocked) {
+  return res.status(403).json({
+    message: "Your account has been blocked. Contact admin.",
+  });
+}
    if(existingUser){
 
     //token generation-sign('data','secretkey')
@@ -88,4 +94,38 @@ exports.adminlogin = async (req, res) => {
   } catch (err) {
     res.status(500).json("Login failed");
   }
+};
+
+
+//to get all users
+
+exports.getAllusers =async(req,res)=>{
+    try{
+        const Allusers=await users.find().select("-password");
+        res.status(200).json(Allusers)
+    }catch(error){
+        res.status(401).json(`failed due to ${error}`)
+    }
+}
+
+//blockUser
+
+exports.toggleUserBlock = async (req, res) => {
+  const { id } = req.params;
+console.log(req.params);
+    
+  const user = await users.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.isBlocked = !user.isBlocked;
+  await user.save();
+
+   return res.status(200).json({
+    message: user.isBlocked
+      ? "User blocked successfully"
+      : "User unblocked successfully",
+    isBlocked: user.isBlocked,
+  });
 };

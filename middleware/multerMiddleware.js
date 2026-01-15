@@ -17,7 +17,7 @@ const storage =multer.diskStorage({
 
 //file filter
 const fileFilter=(req,file,callback)=>{
-    if(file.mimetype=='image/png'  || file.mimetype=='image/jpeg' || file.mimetype=='image/jpg' || file.mimetype=='image/avif')  {
+    if(file.mimetype=='image/png'  || file.mimetype=='image/jpeg' || file.mimetype=='image/jpg' || file.mimetype=='image/avif' || file.mimetype=='image/webp')  {
         callback(null,true)
     }else{
         callback(null,false)

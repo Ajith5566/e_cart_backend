@@ -37,7 +37,17 @@ router.delete("/admin/product/:id", jwtMiddleware, projectController.deleteProdu
 
 
 //path for update product
-router.put("/admin/productUpdate/:id",jwtMiddleware,multerconfig.single("image"),projectController.updateProduct);
+router.put("/admin/productUpdate/:id",jwtMiddleware,multerconfig.single("image"),projectController.updateProduct); 
+
+//path for getting all users
+router.get("/admin/dash/users",userController.getAllusers)
+
+//path for blocking user
+router.put("/admin/dash/blockUser/:id",jwtMiddleware,userController.toggleUserBlock)
+
+//path for fetching product by id
+router.get("/productsByid/:id", projectController.getProductById);
+
 
 
 // Export router to be used in server.js / app.js
