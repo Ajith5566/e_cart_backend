@@ -6,7 +6,7 @@ const userController = require("../controller/userController");
 //import controller fro products
 const projectController=require("../controller/projectController");
 const jwtMiddleware = require("../middleware/jwtMiddleware");
-
+const pageController=require("../controller/pageController")
 //import multer
 const multerconfig = require("../middleware/multerMiddleware");
 
@@ -47,6 +47,18 @@ router.put("/admin/dash/blockUser/:id",jwtMiddleware,userController.toggleUserBl
 
 //path for fetching product by id
 router.get("/productsByid/:id", projectController.getProductById);
+
+router.post("/admin/pages", jwtMiddleware, pageController.addPage);
+router.get("/admin/pages", jwtMiddleware, pageController.getAllPages);
+router.put("/admin/pages/:id", jwtMiddleware, pageController.updatePage);
+router.delete("/admin/pages/:id", jwtMiddleware, pageController.deletePage);
+router.put(
+  "/admin/pages/:id/toggle",
+  jwtMiddleware,
+  pageController.togglePageStatus
+);
+router.get("/page/:slug", pageController.getPageBySlug);
+
 
 
 
