@@ -48,6 +48,8 @@ router.put("/admin/dash/blockUser/:id",jwtMiddleware,userController.toggleUserBl
 //path for fetching product by id
 router.get("/productsByid/:id", projectController.getProductById);
 
+//path for pages
+
 router.post("/admin/pages", jwtMiddleware, pageController.addPage);
 router.get("/admin/pages", jwtMiddleware, pageController.getAllPages);
 router.put("/admin/pages/:id", jwtMiddleware, pageController.updatePage);

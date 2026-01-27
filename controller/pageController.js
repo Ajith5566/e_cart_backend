@@ -29,14 +29,29 @@ exports.addPage = async (req, res) => {
 };
 
 // 📄 Get all pages (admin)
+// 📄 Get all pages (admin) with pagination
 exports.getAllPages = async (req, res) => {
   try {
-    const pages = await Page.find().sort({ createdAt: -1 });
-    res.status(200).json(pages);
-  } catch {
+    // page & limit from query
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+    };
+
+    // 🔥 use paginate instead of find
+    const result = await Page.paginate({}, options);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("GET PAGES ERROR:", error);
     res.status(500).json({ message: "Failed to fetch pages" });
   }
 };
+
 
 // ✏️ Update page
 exports.updatePage = async (req, res) => {

@@ -99,14 +99,29 @@ exports.adminlogin = async (req, res) => {
 
 //to get all users
 
-exports.getAllusers =async(req,res)=>{
-    try{
-        const Allusers=await users.find().select("-password");
-        res.status(200).json(Allusers)
-    }catch(error){
-        res.status(401).json(`failed due to ${error}`)
-    }
-}
+exports.getAllusers = async (req, res) => {
+  try {
+    // 🔹 Read pagination params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+      select: "-password", // exclude password
+    };
+
+    // 🔥 Use paginate instead of find
+    const result = await users.paginate({}, options);
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("GET USERS ERROR:", error);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};
+
 
 //blockUser
 

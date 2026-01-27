@@ -4,7 +4,10 @@
 //import mongoose
 
 const mongoose =require("mongoose");
+
+const mongoosePaginate = require("mongoose-paginate-v2");
 //schema
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,7 +33,7 @@ const userSchema = new mongoose.Schema(
 );
 
 
-
+userSchema.plugin(mongoosePaginate)
 //model
 const users=mongoose.model("users",userSchema)
 
