@@ -82,7 +82,7 @@ exports.adminlogin = async (req, res) => {
     // ✅ Generate JWT
     const token = jwt.sign(
       { adminId: admin._id },
-      "superSecretkey123",
+      process.env.MY_SECRET,
       { expiresIn: "1d" }
     );
 

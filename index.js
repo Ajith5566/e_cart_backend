@@ -1,41 +1,44 @@
-// 1) import dotenv module
-require('dotenv').config();
+// 1) Load environment variables
+require("dotenv").config();
 
-// 2) import express
-const express = require('express');
+// 2) Imports
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
-// 3) import cors
-const cors = require('cors');
+// 3) Import router
+const router = require("./Router/router");
 
-// import router
-const router = require('./Router/router'); 
+// 4) Import DB connection
+require("./DB/connection");
 
-
-// import DB connection
-require('./DB/connection');  // ensures DB connects before server starts
-
-// 4) create server
+// 5) Create server
 const cartServer = express();
 
-// 5) use cors
-cartServer.use(cors());
+// 6) CORS (REQUIRED for cookies)
+cartServer.use(
+  cors({
+    origin: "http://localhost:5173", // frontend URL
+    credentials: true,              // allow cookies
+  })
+);
 
-// 6) convert json to JS object
+// 7) Parse JSON
 cartServer.use(express.json());
 
-// 7) use router
+// 8) Parse cookies 🍪 (VERY IMPORTANT)
+cartServer.use(cookieParser());
+
+// 9) Static files
+cartServer.use("/uploads", express.static("./uploads"));
+
+// 10) Routes
 cartServer.use(router);
 
-
-cartServer.use('/uploads',express.static('./uploads'))
-
-//import app middleware
-
-
-// 8) set port correctly
+// 11) Port
 const PORT = process.env.PORT || 4000;
 
-// 9) run server
+// 12) Start server
 cartServer.listen(PORT, () => {
-  console.log(`cart server running successfully on port ${PORT}`);
+  console.log(`Cart server running successfully on port ${PORT}`);
 });
