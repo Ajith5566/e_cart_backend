@@ -2,7 +2,7 @@ const users = require('../modal/userSchema');  // ✅ IMPORTANT
 const jwt = require('jsonwebtoken');
 const admins=require('../modal/adminSchema');
 const bcrypt = require("bcrypt");
-
+const createToken = require("../utils/createToken");
 // logic for register
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -66,33 +66,29 @@ exports.adminlogin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const admin = await admins.findOne({ email: email });
-
+    const admin = await admins.findOne({ email });
     if (!admin) {
-      return res.status(406).json("Invalid email or password");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // 🔐 Compare entered password with hash
     const isMatch = await bcrypt.compare(password, admin.password);
-
     if (!isMatch) {
-      return res.status(406).json("Invalid email or password");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // ✅ Generate JWT
-    const token = jwt.sign(
-      { adminId: admin._id },
-      process.env.MY_SECRET,
-      { expiresIn: "1d" }
-    );
+    // ✅ CREATE JWT & SET COOKIE
+    createToken(res, admin._id);
+
+    // remove password before sending admin
+    const { password: _, ...adminData } = admin._doc;
 
     res.status(200).json({
-      admin,
-      token,
+      message: "Login successful",
+      admin: adminData,
     });
 
-  } catch (err) {
-    res.status(500).json("Login failed");
+  } catch (error) {
+    res.status(500).json({ message: "Login failed" });
   }
 };
 

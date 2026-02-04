@@ -7,6 +7,9 @@ const userController = require("../controller/userController");
 const projectController=require("../controller/projectController");
 const jwtMiddleware = require("../middleware/jwtMiddleware");
 const pageController=require("../controller/pageController")
+
+//admin controller
+const adminController=require("../controller/adminController")
 //import multer
 const multerconfig = require("../middleware/multerMiddleware");
 
@@ -62,7 +65,11 @@ router.put(
 router.get("/page/:slug", pageController.getPageBySlug);
 
 
+//verify cookie end_point
+router.get("/admin/me", jwtMiddleware, adminController.checkAdminAuth);
 
+//logout
+router.post("/admin/logout", adminController.logout);
 
 // Export router to be used in server.js / app.js
 module.exports = router;

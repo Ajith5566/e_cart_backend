@@ -6,41 +6,55 @@ const mongoose=require("mongoose");
 
 
 //add project
-exports.addproject=async(req,res)=>{
-    //console.log("inside project controller")
-    
-    const adminId=req.payload;
-    console.log(adminId)
+exports.addproject = async (req, res) => {
+  try {
+    // ✅ admin id from jwt middleware
+    const adminId = req.adminId;
 
-    const image=req.file.filename;
-    console.log(image);
-
-    const {name,price,quantity}=req.body
-    console.log(name,price,quantity);
-    
-    try{
-
-        const existingProduct = await products.findOne({productName:name});
-
-        if(existingProduct){
-            return  res.status(406).json({message:"product already added"});
-        }else{
-            const newProduct = new products({
-                productName:name,
-                price,
-                quantity,
-                image,
-                adminId
-            })
-            await newProduct.save();
-            res.status(200).json(newProduct);
-        }
-    }catch(error){
-        res.status(406).json('request failed due to',error)
+    if (!adminId) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    
-    
-}
+
+    // ✅ multer file check
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const image = req.file.filename;
+
+    const { name, price, quantity } = req.body;
+
+    if (!name || !price || !quantity) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // 🔍 check existing product
+    const existingProduct = await products.findOne({
+      productName: name.trim(),
+    });
+
+    if (existingProduct) {
+      return res.status(409).json({ message: "Product already added" });
+    }
+
+    // ✅ save product
+    const newProduct = new products({
+      productName: name.trim(),
+      price,
+      quantity,
+      image,
+      adminId,
+    });
+
+    await newProduct.save();
+
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("ADD PRODUCT ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 
 //to get all products

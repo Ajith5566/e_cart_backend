@@ -1,25 +1,25 @@
-//to verify token
+const jwt = require("jsonwebtoken");
 
+const jwtMiddleware = (req, res, next) => {
+  try {
+    // 🍪 Read token from cookie
+    const token = req.cookies.jwt;
 
-const jwt=require('jsonwebtoken');
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No token" });
+    }
 
+    // 🔐 Verify token
+    const decoded = jwt.verify(token, process.env.MY_SECRET);
 
-const    jwtMiddleware=(req,res,next)=>{
-    console.log('inside jwt middleware');
-    
+    // Attach admin info to request
+    req.adminId = decoded.userId;
+    req.role = decoded.role;
 
-        const token=req.headers['authorization'].split(' ')[1];
-        console.log(token);
-        try{
-            const response=   jwt.verify(token,"superSecretkey123")
-            console.log(response);
-            req.payload=response.adminId;
-            
-        }catch(error){
-            res.status(401).json('Authorization failed',error)
-        }
-        next()
-        
-}   
+    next(); // ✅ allow request to continue
+  } catch (error) {
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
+  }
+};
 
-module.exports=jwtMiddleware
+module.exports = jwtMiddleware;
