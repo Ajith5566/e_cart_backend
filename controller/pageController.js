@@ -35,15 +35,25 @@ exports.getAllPages = async (req, res) => {
     // page & limit from query
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
+  const search = req.query.search || "";
 
     const options = {
       page,
       limit,
       sort: { createdAt: -1 },
     };
+    // ✅ SEARCH QUERY
+    const query = search
+      ? {
+          title: {
+            $regex: `^${search}`, // starts with
+            $options: "i", // case insensitive
+          },
+        }
+      : {};
 
     // 🔥 use paginate instead of find
-    const result = await Page.paginate({}, options);
+    const result = await Page.paginate(query, options);
 
     res.status(200).json(result);
   } catch (error) {

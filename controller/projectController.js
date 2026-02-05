@@ -59,14 +59,43 @@ exports.addproject = async (req, res) => {
 
 //to get all products
 
-exports.getAllproducts =async(req,res)=>{
-    try{
-        const Allproduct=await products.find();
-        res.status(200).json(Allproduct)
-    }catch(error){
-        res.status(401).json(`failed due to ${error}`)
-    }
-}
+exports.getAllproducts = async (req, res) => {
+  try {
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+
+    const options = {
+      page,
+      limit,
+      sort: { createdAt: -1 },
+    };
+
+    // ✅ SEARCH QUERY
+    const query = search
+      ? {
+          productName: {
+            $regex: `^${search}`, // starts with
+            $options: "i", // case insensitive
+          },
+        }
+      : {};
+
+    const Allproduct = await products.paginate(query, options);
+
+    res.status(200).json(Allproduct);
+
+  } catch (error) {
+
+    console.error("GET PRODUCTS ERROR:", error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 
 //delete product
 
