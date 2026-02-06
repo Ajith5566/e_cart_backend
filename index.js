@@ -18,7 +18,7 @@ const cartServer = express();
 // 6) CORS (REQUIRED for cookies)
 cartServer.use(
   cors({
-    origin: "http://localhost:5173", // frontend URL
+    origin: "https://e-cart-admin-dash.vercel.app", // frontend URL
     credentials: true,              // allow cookies
   })
 );
@@ -28,6 +28,7 @@ cartServer.use(express.json());
 
 // 8) Parse cookies 🍪 (VERY IMPORTANT)
 cartServer.use(cookieParser());
+cartServer.set("trust proxy", 1);
 
 // 9) Static files
 cartServer.use("/uploads", express.static("./uploads"));
