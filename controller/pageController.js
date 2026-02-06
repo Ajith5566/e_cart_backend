@@ -36,6 +36,7 @@ exports.getAllPages = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
   const search = req.query.search || "";
+  const inactive = req.query.inactive === "true";
 
     const options = {
       page,
@@ -51,6 +52,10 @@ exports.getAllPages = async (req, res) => {
           },
         }
       : {};
+
+      if (inactive) {
+  query.isActive = false;
+}
 
     // 🔥 use paginate instead of find
     const result = await Page.paginate(query, options);
