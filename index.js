@@ -28,7 +28,7 @@ cartServer.use(express.json());
 
 // 8) Parse cookies 🍪 (VERY IMPORTANT)
 cartServer.use(cookieParser());
-cartServer.set("trust proxy", ture);
+cartServer.set("trust proxy", true);
 
 // 9) Static files
 cartServer.use("/uploads", express.static("./uploads"));
