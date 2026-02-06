@@ -8,11 +8,13 @@ const createToken = (res, userId) => {
   );
 
   res.cookie("jwt", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-  });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  domain: ".onrender.com",
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+});
+
 };
 
 module.exports = createToken;
